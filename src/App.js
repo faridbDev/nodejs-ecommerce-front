@@ -30,6 +30,9 @@ import OrdersList from "./components/Admin/Orders/OdersList";
 import ManageOrders from "./components/Admin/Orders/ManageOrders";
 import Customers from "./components/Admin/Orders/Customers";
 import BrandsColorsList from "./components/Admin/Categories/BrandsColorsList";
+import AuthRoute from "./components/AuthRoute/AuthRoute";
+import AdminRoutes from "./components/AuthRoute/AdminRoutes";
+
 
 const App = () => {
   return (
@@ -38,7 +41,13 @@ const App = () => {
       {/* hide navbar if admin */}
       <Routes>
         {/* nested route */}
-        <Route path="admin" element={<AdminDashboard />}>
+        <Route path="admin"
+          element={
+            <AdminRoutes>
+              <AdminDashboard />
+            </AdminRoutes>
+          }
+        >
           {/* products */} <Route path="" element={<OrdersList />} />
           <Route path="add-product" element={<AddProduct />} />
           <Route path="manage-products" element={<ManageStocks />} />
