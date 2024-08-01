@@ -3,20 +3,11 @@ import HomeCategories from "./HomeCategories";
 import HomeProductTrending from "./HomeProductTrending";
 
 const offers = [
-  {
-    name: "Download the app",
-    description: "Get an exclusive $5 off code",
-    href: "#",
+  { name: "Download the app", description: "Get an exclusive $5 off code", href: "#",
   },
-  {
-    name: "Return when you're ready",
-    description: "60 days of free returns",
-    href: "#",
+  { name: "Return when you're ready", description: "60 days of free returns", href: "#",
   },
-  {
-    name: "Sign up for our newsletter",
-    description: "15% off your first order",
-    href: "#",
+  { name: "Sign up for our newsletter", description: "15% off your first order", href: "#",
   },
 ];
 
@@ -53,8 +44,7 @@ export default function Example() {
               <ul role="list" className="grid grid-cols-1 divide-y divide-gray-200 lg:grid-cols-3 lg:divide-y-0 lg:divide-x">
                 {offers.map((offer) => (
                   <li key={offer.name} className="flex flex-col">
-                    <a href={offer.href}
-                      className="relative flex flex-1 flex-col justify-center bg-white py-6 px-4 text-center focus:z-10">
+                    <a href={offer.href} className="relative flex flex-1 flex-col justify-center bg-white py-6 px-4 text-center focus:z-10">
                       <p className="text-sm text-gray-500">{offer.name}</p>
                       <p className="font-semibold text-gray-900">
                         {offer.description}
@@ -88,7 +78,7 @@ export default function Example() {
               </div>
             </div>
             <div className="h-48 w-full sm:h-64 lg:absolute lg:top-0 lg:right-0 lg:h-full lg:w-1/2">
-              <img src="https://tailwindui.com/img/ecommerce-images/home-page-02-hero-half-width.jpg" alt="" className="h-full w-full object-cover object-center"/>
+              <img src="https://tailwindui.com/img/ecommerce-images/home-page-02-hero-half-width.jpg" alt="img" className="h-full w-full object-cover object-center"/>
             </div>
           </div>
         </div>

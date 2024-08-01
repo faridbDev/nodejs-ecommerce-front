@@ -16,6 +16,27 @@ const animatedComponents = makeAnimated();
 
 export default function AddProduct() {
   const dispatch = useDispatch();
+  // files
+  const [files, setFiles] = useState([]);
+  const [fileErrs, setFileErrs] = useState([]);
+  // file handlechange
+  const fileHandleChange = (event) => {
+    const newFiles = Array.from(event.target.files);
+    // validation
+    const newErrs = [];
+    newFiles.forEach(file => {
+      if (file?.size > 1000000) {
+        newErrs.push(`${file?.name} is too large`);
+      }
+      if (!file?.type?.startsWith('image/')) {
+        newErrs.push(`${file.name} is not an image`)
+      }
+    });
+    setFiles(newFiles);
+    setFileErrs(newErrs);
+  }
+
+
   // Sizes
   const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
   const [sizeOption, setSizeOption] = useState([]);
@@ -32,7 +53,7 @@ export default function AddProduct() {
     dispatch(fetchCategoriesAction());
   }, [dispatch]);
   // select data from store
-  const { categories, loading, error } = useSelector((state) => state?.categories?.categories);
+  const { categories } = useSelector((state) => state?.categories?.categories);
 
   // brands
   useEffect(() => {
@@ -56,9 +77,6 @@ export default function AddProduct() {
     return { value: color?.name, label: color?.name };
   });
 
-
-  let isAdded;
-
   //---form data---
   const [formData, setFormData] = useState({
     name: "",
@@ -67,7 +85,6 @@ export default function AddProduct() {
     sizes: "",
     brand: "",
     colors: "",
-    images: "",
     price: "",
     totalQty: "",
   });
@@ -77,30 +94,41 @@ export default function AddProduct() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // get product from store
+  const { product, isAdded, loading, error } = useSelector((state) => state?.products);
+
   //onSubmit
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    console.log(fileErrs);
     // dispatch
-    dispatch(createProductAction(formData));
+    dispatch(
+      createProductAction({
+        ...formData,
+        images: files,
+        colors: colorsOption?.map((color) => color?.label),
+        sizes: sizeOption?.map((size) => size?.label)
+      })
+    );
     
     //reset form data
-    // setFormData({
-    //   name: "",
-    //   description: "",
-    //   category: "",
-    //   sizes: "",
-    //   brand: "",
-    //   colors: "",
-    //   images: "",
-    //   price: "",
-    //   totalQty: "",
-    // });
+    setFormData({
+      name: "",
+      description: "",
+      category: "",
+      sizes: "",
+      brand: "",
+      colors: "",
+      images: "",
+      price: "",
+      totalQty: "",
+    });
   };
 
   return (
     <>
       {error && <ErrorMsg message={error?.message} />}
+      {fileErrs?.length > 0 && <ErrorMsg message='file too large or not an image' />}
       {isAdded && <SuccessMsg message="Product Added Successfully" />}
       <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -183,11 +211,11 @@ export default function AddProduct() {
                       <div className="flex text-sm text-gray-600">
                         <label htmlFor="file-upload" className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500">
                           <span>Upload files</span>
-                          <input name="images" value={formData.images} onChange={handleOnChange} type="file" />
+                          <input name="images" multiple onChange={fileHandleChange} type="file" />
                         </label>
                       </div>
                       <p className="text-xs text-gray-500">
-                        PNG, JPG, GIF up to 10MB
+                        PNG, JPG, GIF up to 1MB
                       </p>
                     </div>
                   </div>
@@ -226,7 +254,7 @@ export default function AddProduct() {
                 {loading ? (
                   <LoadingComponent />
                 ) : (
-                  <button type="submit" className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                  <button disabled={fileErrs?.length>0} type="submit" className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                     Add Product
                   </button>
                 )}

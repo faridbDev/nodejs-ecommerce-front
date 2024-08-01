@@ -37,7 +37,7 @@ import AdminRoutes from "./components/AuthRoute/AdminRoutes";
 const App = () => {
   return (
     <BrowserRouter>
-      {/* <Navbar /> */}
+      <Navbar />
       {/* hide navbar if admin */}
       <Routes>
         {/* nested route */}
