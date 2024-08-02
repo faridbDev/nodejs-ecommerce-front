@@ -34,7 +34,7 @@ export default function AddProduct() {
     });
     setFiles(newFiles);
     setFileErrs(newErrs);
-  }
+  };
 
 
   // Sizes
