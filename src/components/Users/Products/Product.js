@@ -2,70 +2,11 @@ import { useEffect, useState } from "react";
 import { RadioGroup } from "@headlessui/react";
 import { CurrencyDollarIcon, GlobeAmericasIcon } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/20/solid";
+import Swal from "sweetalert2";
 import { Link, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProductAction } from "../../../redux/slices/products/productSlices";
-
-const product = {
-  name: "Basic Tee",
-  price: "$35",
-  href: "#",
-  breadcrumbs: [
-    { id: 1, name: "Women", href: "#" },
-    { id: 2, name: "Clothing", href: "#" },
-  ],
-  images: [
-    {
-      id: 1,
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-01-featured-product-shot.jpg",
-      imageAlt: "Back of women's Basic Tee in black.",
-      primary: true,
-    },
-    {
-      id: 2,
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-01-product-shot-01.jpg",
-      imageAlt: "Side profile of women's Basic Tee in black.",
-      primary: false,
-    },
-    {
-      id: 3,
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-01-product-shot-02.jpg",
-      imageAlt: "Front of women's Basic Tee in black.",
-      primary: false,
-    },
-  ],
-  colors: [
-    { name: "Black", bgColor: "bg-gray-900", selectedColor: "ring-gray-900" },
-    {
-      name: "Heather Grey",
-      bgColor: "bg-gray-400",
-      selectedColor: "ring-gray-400",
-    },
-  ],
-  sizes: [
-    { name: "XXS", inStock: true },
-    { name: "XS", inStock: true },
-    { name: "S", inStock: true },
-    { name: "M", inStock: true },
-    { name: "L", inStock: true },
-    { name: "XL", inStock: false },
-  ],
-  description: `
-    <p>The Basic tee is an honest new take on a classic. The tee uses super soft, pre-shrunk cotton for true comfort and a dependable fit. They are hand cut and sewn locally, with a special dye technique that gives each tee it's own look.</p>
-    <p>Looking to stock your closet? The Basic tee also comes in a 3-pack or 5-pack at a bundle discount.</p>
-  `,
-  details: [
-    "Only the best materials",
-    "Ethically and locally made",
-    "Pre-washed and pre-shrunk",
-    "Machine wash cold with similar colors",
-  ],
-};
-
-
+import { addOrderToCartAction, getCartItemsFromLocalStorageAction } from "../../../redux/slices/carts/cartSlices";
 
 const policies = [
   {
@@ -90,12 +31,7 @@ export default function Product() {
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
 
-  //Add to cart handler
-  const addToCartHandler = (item) => {};
   let productDetails = {};
-  let productColor;
-  let productSize;
-  let cartItems = [];
 
   // get id from params
   const { id } = useParams();
@@ -104,7 +40,46 @@ export default function Product() {
   }, [id]);
   // get data from store
   const { loading, error, product: { product } } = useSelector((state) => state?.products);
-  console.log(product);
+
+  // get cart items
+  useEffect(() => {
+    dispatch(getCartItemsFromLocalStorageAction());
+  }, []);
+
+  // get data from store
+  const { cartItems } = useSelector((state) => state?.carts);
+  const productExists = cartItems?.find((item) => item?._id?.toString() === product?._id?.toString());
+  
+  //Add to cart handler
+  const addToCartHandler = () => {
+    // check if product is in cart
+    if (productExists) {
+      return Swal.fire({ icon: "error", title: "Oops!", text: 'Product Is Already In Cart' });
+    }
+    // check if color or size selected
+    if (selectedColor === '') {
+      return Swal.fire({ icon: "error", title: "Oops!", text: 'Please Select Product Color' });
+    }
+    if (selectedSize === '') {
+      return Swal.fire({ icon: "error", title: "Oops!", text: 'Please Select Product Size' });
+    }
+    dispatch(
+      addOrderToCartAction({
+        _id: product?._id,
+        name: product?.name,
+        qty: 1,
+        price: product?.price,
+        description: product?.description,
+        color: selectedColor,
+        size: selectedSize,
+        image: product?.images[0],
+        totalPrice: product?.price,
+        qtyLeft: product?.qtyLeft
+      })
+    );
+    Swal.fire({ icon: "success", title: "Good Job!", text: 'Product Added To Cart Successfully' });
+    return dispatch(getCartItemsFromLocalStorageAction());
+  };
 
   return (
     <div className="bg-white">
@@ -178,9 +153,7 @@ export default function Product() {
                   <RadioGroup value={selectedColor} onChange={setSelectedColor}>
                     <div className="mt-4 flex items-center space-x-3">
                       {product?.colors?.map((color) => (
-                        <RadioGroup.Option
-                          key={color}
-                          value={color}
+                        <RadioGroup.Option key={color} value={color}
                           className={({ active, checked }) =>
                             classNames(
                               active && checked ? "ring ring-offset-1" : "",
@@ -210,16 +183,11 @@ export default function Product() {
                 <div className="flex items-center justify-between">
                   <h2 className="text-sm font-medium text-gray-900">Size</h2>
                 </div>
-                <RadioGroup
-                  value={selectedSize}
-                  onChange={setSelectedSize}
-                  className="mt-2">
+                <RadioGroup value={selectedSize} onChange={setSelectedSize} className="mt-2">
                   {/* Choose size */}
                   <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
                     {product?.sizes?.map((size) => (
-                      <RadioGroup.Option
-                        key={size}
-                        value={size}
+                      <RadioGroup.Option key={size} value={size}
                         className={({ active, checked }) => {
                           return classNames(
                             checked
@@ -235,17 +203,13 @@ export default function Product() {
                 </RadioGroup>
               </div>
               {/* add to cart */}
-              <button
-                onClick={() => addToCartHandler()}
-                className="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+              <button onClick={() => addToCartHandler()} className="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                 Add to cart
               </button>
               {/* proceed to check */}
 
               {cartItems.length > 0 && (
-                <Link
-                  to="/shopping-cart"
-                  className="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-green-800 py-3 px-8 text-base font-medium text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                <Link to="/shopping-cart" className="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-green-800 py-3 px-8 text-base font-medium text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                   Proceed to checkout
                 </Link>
               )}
@@ -324,10 +288,7 @@ export default function Product() {
                       {review?.message}
                     </h3>
 
-                    <div
-                      className="mt-3 space-y-6 text-sm text-gray-500"
-                      dangerouslySetInnerHTML={{ __html: review.content }}
-                    />
+                    <div className="mt-3 space-y-6 text-sm text-gray-500" dangerouslySetInnerHTML={{ __html: review.content }}/>
                   </div>
                 </div>
 
