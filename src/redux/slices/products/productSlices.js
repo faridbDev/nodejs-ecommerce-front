@@ -51,7 +51,8 @@ export const createProductAction = createAsyncThunk('product/create',
 
 // fetch products action
 export const fetchProductsAction = createAsyncThunk('product/list',
-  async (payload, { rejectWithValue, getState, dispatch }) => {
+  async ({ url }, { rejectWithValue, getState, dispatch }) => {
+    console.log(url);
     try {
       // make request
       // Token - Authenticated
@@ -61,7 +62,8 @@ export const fetchProductsAction = createAsyncThunk('product/list',
           Authorization: `Bearer ${token}`,
         }
       };
-      const { data } = await axios.get(`${baseURL}/products`, config);
+
+      const { data } = await axios.get(`${url}`, config);
       return data;
     } catch (error) {
       return rejectWithValue(error?.response?.data);
@@ -70,7 +72,7 @@ export const fetchProductsAction = createAsyncThunk('product/list',
 );
 
 // fetch product action
-export const fetchProductAction = createAsyncThunk('product/detail',
+export const fetchProductAction = createAsyncThunk('product/details',
   async (productId, { rejectWithValue, getState, dispatch }) => {
     try {
       // make request

@@ -13,14 +13,13 @@ const Products = ({ products }) => {
                 <span className="absolute top-0 left-0 ml-6 mt-6 px-2 py-1 text-xs font-bold font-heading bg-white border-2 border-red-500 rounded-full text-red-500">
                   -15%
                 </span>
-                <Link className="block"
-                  to={{
-                    pathname: `/products/${product?.id}`,
+                <Link className="block" to={{ pathname: `/products/${product?._id}`,
                     // state: {
                     //   product: product,
                     // },
                   }}>
-                  <img className="w-full h-64 object-cover" src={product?.images[0]} alt="img"/>
+                  {/* <img className="w-full h-64 object-cover" src={product?.images[0]} alt="img"/> */}
+                  <img className="w-full h-64 object-cover" src={`data:${product.images[0].contentType};base64,${product.images[0].data.toString("base64")}`} alt={product?.name}/>
                 </Link>
                 <div className="px-6 pb-6 mt-8">
                   <a className="block px-6 mb-2" href="#">
@@ -28,9 +27,9 @@ const Products = ({ products }) => {
                       {product?.name}
                     </h3>
                     <p className="text-lg font-bold font-heading text-blue-500">
-                      <span>${product?.price}</span>
+                      <span>IRR {product?.price}</span>
                       <span className="text-xs text-gray-500 font-semibold font-heading line-through">
-                        $40.99
+                        IRR 2000000
                       </span>
                     </p>
                   </a>

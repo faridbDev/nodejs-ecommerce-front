@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import baseURL from "../../../utils/baseURL";
+import { resetErrAction, resetSuccessAction } from "../globalActions/globalActions";
 
 // initial state
 const initialState = {
@@ -15,9 +16,8 @@ const initialState = {
 
 // create color action
 export const createColorAction = createAsyncThunk('colors/create',
-  async (payload, { rejectWithValue, getState, dispatch }) => {
+  async (name, { rejectWithValue, getState, dispatch }) => {
     try {
-      const { name } = payload;
       // make request
       // Token - Authenticated
       const token = getState()?.users?.userAuth?.userInfo?.token;
@@ -35,7 +35,7 @@ export const createColorAction = createAsyncThunk('colors/create',
 );
 
 // fetch all color
-export const fetchColorsAction = createAsyncThunk('colors/fetch-all',
+export const fetchColorsAction = createAsyncThunk('colors/fetch All',
   async (payload, { rejectWithValue, getState, dispatch }) => {
     try {
       const { data } = await axios.get(`${baseURL}/colors`);
@@ -66,7 +66,7 @@ const colorSlice = createSlice({
       state.isAdded = false;
       state.error = action.payload;
     });
-    // fetch all
+    // fetch all colors
     builder.addCase(fetchColorsAction.pending, (state) => {
       state.loading = true;
     });
@@ -80,6 +80,16 @@ const colorSlice = createSlice({
       state.colors = null;
       state.isAdded = false;
       state.error = action.payload;
+    });
+    // reset err action
+    builder.addCase(resetErrAction.pending, (state) => {
+      state.isAdded = false;
+      state.error = null;
+    });
+    // reset success action
+    builder.addCase(resetSuccessAction.pending, (state) => {
+      state.isAdded = false;
+      state.error = null;
     });
   }
 });

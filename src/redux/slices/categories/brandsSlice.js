@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import baseURL from "../../../utils/baseURL";
+import { resetErrAction, resetSuccessAction } from "../globalActions/globalActions";
 
 // initial state
 const initialState = {
@@ -15,9 +16,8 @@ const initialState = {
 
 // create brand action
 export const createBrandAction = createAsyncThunk('brand/create',
-  async (payload, { rejectWithValue, getState, dispatch }) => {
+  async (name, { rejectWithValue, getState, dispatch }) => {
     try {
-      const { name } = payload;
       // make request
       // Token - Authenticated
       const token = getState()?.users?.userAuth?.userInfo?.token;
@@ -34,8 +34,8 @@ export const createBrandAction = createAsyncThunk('brand/create',
   }
 );
 
-// fetch all brand
-export const fetchBrandsAction = createAsyncThunk('brands/fetch-all',
+// fetch all brands
+export const fetchBrandsAction = createAsyncThunk('brands/fetch All',
   async (payload, { rejectWithValue, getState, dispatch }) => {
     try {
       const { data } = await axios.get(`${baseURL}/brands`);
@@ -66,7 +66,7 @@ const brandSlice = createSlice({
       state.isAdded = false;
       state.error = action.payload;
     });
-    // fetch all
+    // fetch all brands
     builder.addCase(fetchBrandsAction.pending, (state) => {
       state.loading = true;
     });
@@ -80,6 +80,16 @@ const brandSlice = createSlice({
       state.brands = null;
       state.isAdded = false;
       state.error = action.payload;
+    });
+    // reset err action
+    builder.addCase(resetErrAction.pending, (state) => {
+      state.isAdded = false;
+      state.error = null;
+    });
+    // reset success action
+    builder.addCase(resetSuccessAction.pending, (state) => {
+      state.isAdded = false;
+      state.error = null;
     });
   }
 });
