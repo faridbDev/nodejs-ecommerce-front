@@ -35,7 +35,7 @@ export const createBrandAction = createAsyncThunk('brand/create',
 );
 
 // fetch all brands
-export const fetchBrandsAction = createAsyncThunk('brands/fetch All',
+export const fetchBrandsAction = createAsyncThunk('brands/fetch-All',
   async (payload, { rejectWithValue, getState, dispatch }) => {
     try {
       const { data } = await axios.get(`${baseURL}/brands`);

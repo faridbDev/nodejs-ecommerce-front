@@ -4,19 +4,29 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getCartItemsFromLocalStorageAction, changeOrderItemQtyAction,
 removeOrderItemAction } from "../../../redux/slices/carts/cartSlices";
+import { fetchCouponAction } from "../../../redux/slices/coupons/couponsSlice";
+import LoadingComponent from "../../LoadingComp/LoadingComponent";
+import SuccessMsg from "../../SuccessMsg/SuccessMsg";
+import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 
 export default function ShoppingCart() {
-  let error;
-  let couponFound;
-  let applyCouponSubmit;
-  let setCoupon;
-  let loading;
-  let coupon;
   // dispatch
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getCartItemsFromLocalStorageAction());
   }, [dispatch]);
+
+  // coupon state
+  const [couponCode, setCouponCode] = useState(null);
+  const applyCouponSubmit = (e) => {
+    e.preventDefault();
+    dispatch(fetchCouponAction(couponCode));
+    setCouponCode("");
+  };
+
+  // get coupon from store
+  const { coupon, loading, error, isAdded } = useSelector((state) => state?.coupons);
+
   // get cart items from store
   const { cartItems } = useSelector((state) => state?.carts);
   // add to cart handler
@@ -24,12 +34,18 @@ export default function ShoppingCart() {
     dispatch(changeOrderItemQtyAction({ productId, qty }));
     dispatch(getCartItemsFromLocalStorageAction());
   };
+
   // calculate total price
-  const sumTotalPrice = cartItems?.reduce((acc, current) => {
-    return acc + current?.totalPrice
+  let sumTotalPrice = 0;
+  sumTotalPrice = cartItems?.reduce((acc, current) => {
+    return acc + current?.totalPrice;
   }, 0);
-  console.log(sumTotalPrice);
-  
+
+  // check if coupon found
+  if (coupon) {
+    sumTotalPrice = sumTotalPrice - (sumTotalPrice * coupon?.coupon?.discount) / 100;
+  }
+
   // remove cart item handler
   const removeOrderItemHandler = (productId) => {
     dispatch(removeOrderItemAction(productId));
@@ -48,7 +64,7 @@ export default function ShoppingCart() {
               Items in your shopping cart
             </h2>
 
-            <ul role="list" className="divide-y divide-gray-200 border-t border-b border-gray-200">
+            <ul className="divide-y divide-gray-200 border-t border-b border-gray-200">
               {cartItems?.map((product) => (
                 <li key={product._id} className="flex py-6 sm:py-10">
                   <div className="flex-shrink-0">
@@ -123,24 +139,17 @@ export default function ShoppingCart() {
                 <span>Have coupon code? </span>
               </dt>
               {/* errr */}
-              {error && <span className="text-red-500">{error?.message}</span>}
+              {error && <ErrorMsg message={error?.message}/>}
               {/* success */}
-              {couponFound?.status === "success" && !error && (
-                <span className="text-green-800">
-                  Congrats! You have got{" "}
-                  {couponFound?.coupon?.discountInPercentage} % discount
-                </span>
-              )}
+              {isAdded && <SuccessMsg message={`Congratulations! You Got ${coupon?.coupon?.discount}% Discount`}/>}
               <form onSubmit={applyCouponSubmit}>
                 <div className="mt-1">
-                  <input value={coupon} onChange={(e) => setCoupon(e.target.value)} type="text" className="block w-full rounded-md border p-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="you@example.com" />
+                  <input value={couponCode} onChange={(e) => setCouponCode(e.target.value)} type="text" className="block w-full rounded-md border p-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Enter Coupon Code" />
                 </div>
                 {loading ? (
-                  <button disabled className="inline-flex  text-center mt-4 items-center rounded border border-transparent bg-gray-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                    Loading Please Wait...
-                  </button>
+                  <LoadingComponent/>
                 ) : (
-                  <button className="inline-flex  text-center mt-4 items-center rounded border border-transparent bg-green-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                  <button className="inline-flex text-center mt-4 items-center rounded border border-transparent bg-green-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                     Apply coupon
                   </button>
                 )}
@@ -151,18 +160,13 @@ export default function ShoppingCart() {
                   Order total
                 </dt>
                 <dd className=" text-xl font-medium text-gray-900">
-                  $ 3000
+                  IRR {sumTotalPrice}
                 </dd>
               </div>
             </dl>
-
+            {/* pass data to checkout page */}
             <div className="mt-6">
-              <Link
-                //  pass data to checkout page
-                to={{
-                  pathname: "/order-payment",
-                }}
-                className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
+              <Link to={{ pathname: "/order-payment" }} className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
                 Proceed to Checkout
               </Link>
             </div>

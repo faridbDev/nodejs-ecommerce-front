@@ -35,7 +35,7 @@ export const createColorAction = createAsyncThunk('colors/create',
 );
 
 // fetch all color
-export const fetchColorsAction = createAsyncThunk('colors/fetch All',
+export const fetchColorsAction = createAsyncThunk('colors/fetch-All',
   async (payload, { rejectWithValue, getState, dispatch }) => {
     try {
       const { data } = await axios.get(`${baseURL}/colors`);

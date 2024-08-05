@@ -42,7 +42,7 @@ export const createCategoryAction = createAsyncThunk('category/create',
 );
 
 // fetch all categories
-export const fetchCategoriesAction = createAsyncThunk('category/fetch All',
+export const fetchCategoriesAction = createAsyncThunk('category/fetch-All',
   async (payload, { rejectWithValue, getState, dispatch }) => {
     try {
       const { data } = await axios.get(`${baseURL}/categories`);
