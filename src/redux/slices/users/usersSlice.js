@@ -18,8 +18,8 @@ const initialState = {
 };
 
 // login action
-export const loginUserAction = createAsyncThunk("users/login", async ({ email, password },
-  { rejectWithValue, getState, dispatch }) => {
+export const loginUserAction = createAsyncThunk("users/login",
+  async ({ email, password }, { rejectWithValue, getState, dispatch }) => {
     try {
       // make http request
       const { data } = await axios.post(`${baseURL}/users/login`, { email, password });
@@ -34,11 +34,52 @@ export const loginUserAction = createAsyncThunk("users/login", async ({ email, p
 );
 
 // register action
-export const registerUserAction = createAsyncThunk("users/regsiter", async ({ email, password, fullname },
-  { rejectWithValue, getState, dispatch }) => {
+export const registerUserAction = createAsyncThunk("users/regsiter",
+  async ({ email, password, fullname }, { rejectWithValue, getState, dispatch }) => {
     try {
       // make http request
       const { data } = await axios.post(`${baseURL}/users/register`, { email, password, fullname });
+      return data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+// user profile action
+export const getUserProfileAction = createAsyncThunk("users/profile-fetch",
+  async (payload, { rejectWithValue, getState, dispatch }) => {
+    try {
+      // get token
+      const token = getState()?.users?.userAuth?.userInfo?.token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+      const { data } = await axios.get(`${baseURL}/users/profile`, config);
+      return data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+// update user shipping address action
+export const updateUserShippingAddressAction = createAsyncThunk("users/update-shipping-address",
+  async ({ firstName, lastName, address, city, country, postalCode, province, phone }, { rejectWithValue, getState, dispatch }) => {
+    try {
+      // get token
+      const token = getState()?.users?.userAuth?.userInfo?.token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+      const { data } = await axios.put(`${baseURL}/users/update/shipping`,
+        { firstName, lastName, address, city, country, province, postalCode, phone }, config);
       return data;
     } catch (error) {
       console.log(error);
@@ -54,7 +95,7 @@ const usersSlice = createSlice({
   extraReducers: (builder) => {
     // handle actions
     // login
-    builder.addCase(loginUserAction.pending, (state, action) => {
+    builder.addCase(loginUserAction.pending, (state) => {
       state.userAuth.loading = true;
     });
     builder.addCase(loginUserAction.fulfilled, (state, action) => {
@@ -66,7 +107,7 @@ const usersSlice = createSlice({
       state.userAuth.loading = false;
     });
     // register
-    builder.addCase(registerUserAction.pending, (state, action) => {
+    builder.addCase(registerUserAction.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(registerUserAction.fulfilled, (state, action) => {
@@ -74,6 +115,30 @@ const usersSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(registerUserAction.rejected, (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    });
+    // user profile
+    builder.addCase(getUserProfileAction.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getUserProfileAction.fulfilled, (state, action) => {
+      state.profile = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(getUserProfileAction.rejected, (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    });
+    // update shipping address
+    builder.addCase(updateUserShippingAddressAction.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(updateUserShippingAddressAction.fulfilled, (state, action) => {
+      state.user = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(updateUserShippingAddressAction.rejected, (state, action) => {
       state.error = action.payload;
       state.loading = false;
     });

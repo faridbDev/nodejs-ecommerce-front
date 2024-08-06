@@ -25,7 +25,7 @@ import ProductsFilters from "./components/Users/Products/ProductsFilters";
 import CustomerProfile from "./components/Users/Profile/CustomerProfile";
 import AddReview from "./components/Users/Reviews/AddReview";
 import UpdateCategory from "./components/Admin/Categories/UpdateCategory";
-
+import ThanksForOrdering from "./components/Users/Products/ThanksForOrdering";
 import OrdersList from "./components/Admin/Orders/OdersList";
 import ManageOrders from "./components/Admin/Orders/ManageOrders";
 import Customers from "./components/Admin/Orders/Customers";
@@ -78,6 +78,7 @@ const App = () => {
         <Route path="/products-filters" element={<ProductsFilters />} />
         <Route path="/products/:id" element={<Product />} />
         <Route path="/all-categories" element={<AllCategories />} />
+        <Route path="/success" element={<ThanksForOrdering />} />
         {/* review */}
         <Route path="/add-review/:id" element={<AddReview />} />
 

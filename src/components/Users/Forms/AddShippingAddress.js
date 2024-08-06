@@ -1,16 +1,27 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserShippingAddressAction, getUserProfileAction } from "../../../redux/slices/users/usersSlice";
+import LoadingComponent from "../../LoadingComp/LoadingComponent";
+import SuccessMsg from "../../SuccessMsg/SuccessMsg";
+import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 
 const AddShippingAddress = () => {
-  //user profile
-  const { user } = {};
+  // dispatch
+  const dispatch = useDispatch();
+  // user profile
+  useEffect(() => {
+    dispatch(getUserProfileAction());
+  }, [dispatch]);
+  const { loading, error, profile } = useSelector((state) => state?.users);
+  const user = profile?.user;
 
   const [formData, setFormData] = useState({
-    firstName: user?.shippingAddress?.firstName,
+    firstName: "",
     lastName: "",
     address: "",
     city: "",
     country: "",
-    region: "",
+    province: "",
     postalCode: "",
     phone: "",
   });
@@ -22,10 +33,12 @@ const AddShippingAddress = () => {
   //onsubmit
   const onSubmit = (e) => {
     e.preventDefault();
+    dispatch(updateUserShippingAddressAction(formData));
   };
 
   return (
     <>
+      {error && <ErrorMsg message={error?.message}/>}
       {/* shipping details */}
       {user?.hasShippingAddress ? (
         <div className="mt-6">
@@ -101,22 +114,22 @@ const AddShippingAddress = () => {
             </label>
             <div className="mt-1">
               <select id="country" name="country" autoComplete="country" value={formData.country} onChange={onChange} className="block w-full rounded-md border-gray-300 p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                <option value="USA">United States</option>
-                <option value="CAN">Canada</option>
-                <option value="MEX">Mexico</option>
-                <option value="Ghana">Ghana</option>
-                <option value="Nigeria">Nigeria</option>
-                <option value="South Africa">South Africa</option>
+                <option value="Iran">Iran</option>
+                <option value="Turkey">Turkey</option>
+                <option value="Syria">Syria</option>
+                <option value="Iraq">Iraq</option>
+                <option value="Kuwait">Kuwait</option>
+                <option value="Russia">Russia</option>
               </select>
             </div>
           </div>
 
           <div>
-            <label htmlFor="region" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="province" className="block text-sm font-medium text-gray-700">
               State / Province
             </label>
             <div className="mt-1">
-              <input type="text" name="region" onChange={onChange} value={formData.region} autoComplete="address-level1" className="block w-full rounded-md border-gray-300 p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
+              <input type="text" name="province" onChange={onChange} value={formData.province} autoComplete="address-level1" className="block w-full rounded-md border-gray-300 p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
             </div>
           </div>
 
@@ -137,9 +150,13 @@ const AddShippingAddress = () => {
               <input type="text" name="phone" id="phone" onChange={onChange} value={formData.phone} autoComplete="tel" className="block w-full rounded-md border-gray-300 p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
             </div>
           </div>
-          <button type="submit" className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
-            Add Shipping Address
-          </button>
+          {loading ? (
+            <LoadingComponent/>
+          ) : (
+            <button type="submit" className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
+              Add Shipping Address
+            </button>
+          )}
         </form>
       )}
     </>

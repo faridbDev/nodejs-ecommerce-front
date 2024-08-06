@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import baseURL from "../../../utils/baseURL";
 import { resetErrAction, resetSuccessAction } from "../globalActions/globalActions";
-const base64 = require('js-base64');
 
 // initial state
 const initialState = {

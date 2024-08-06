@@ -6,7 +6,7 @@ import baseURL from "../../utils/baseURL";
 import logo from "./logo3.png";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategoriesAction } from "../../redux/slices/categories/categoriesSlice";
-
+import { getCartItemsFromLocalStorageAction } from "../../redux/slices/carts/cartSlices";
 
 export default function Navbar() {
   // dispatch
@@ -22,8 +22,12 @@ export default function Navbar() {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  //get cart items from local storage
-  let cartItemsFromLocalStorage;
+  // get cart items from store
+  useEffect(() => {
+    dispatch(getCartItemsFromLocalStorageAction());
+  }, [dispatch]);
+  const { cartItems } = useSelector((state) => state?.carts);
+
   // get logged in user from localstorage
   const user = JSON.parse(localStorage.getItem('userInfo'));
   const isLoggedIn = user?.token ? true : false;
@@ -214,9 +218,7 @@ export default function Navbar() {
                         <Link to="/shopping-cart" className="group -m-2 flex items-center p-2">
                           <ShoppingCartIcon className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500" aria-hidden="true"/>
                           <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                            {cartItemsFromLocalStorage?.length > 0
-                              ? cartItemsFromLocalStorage.length
-                              : 0}
+                            {cartItems?.length > 0 ? cartItems.length : 0}
                           </span>
                         </Link>
                       </div>

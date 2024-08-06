@@ -29,6 +29,7 @@ export default function ShoppingCart() {
 
   // get cart items from store
   const { cartItems } = useSelector((state) => state?.carts);
+
   // add to cart handler
   const changeOrderItemQtyHandler = (productId, qty) => {
     dispatch(changeOrderItemQtyAction({ productId, qty }));
@@ -166,7 +167,7 @@ export default function ShoppingCart() {
             </dl>
             {/* pass data to checkout page */}
             <div className="mt-6">
-              <Link to={{ pathname: "/order-payment" }} className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
+              <Link to="/order-payment" state={{ sumTotalPrice }} className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
                 Proceed to Checkout
               </Link>
             </div>
