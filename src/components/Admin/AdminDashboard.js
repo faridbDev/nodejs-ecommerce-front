@@ -17,15 +17,6 @@ const ordersLinks = [
     current: true,
   },
   {
-    name: "Manage Orders",
-    href: "manage-orders",
-    icon: () => (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 m-1">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-  },
-  {
     name: "Customers",
     href: "customers",
     icon: () => (
@@ -287,7 +278,7 @@ export default function AdminDashboard() {
                   <div className="min-w-0 flex-1">
                     {/* Profile */}
                     <div className="flex items-center">
-                      <img className="hidden h-16 w-16 rounded-full sm:block" src="https://s8.uupload.ir/files/sina_eq08.jpg" alt=""/>
+                      <img className="hidden h-16 w-16 rounded-full sm:block" src="https://s8.uupload.ir/files/sina_jho3.jpg" alt=""/>
                       <div>
                         <div className="flex items-center">
                           {/* <img className="h-16 w-16 rounded-full sm:hidden" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.6&w=256&h=256&q=80" alt=""/> */}

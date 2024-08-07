@@ -1,11 +1,22 @@
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import CustomerDetails from "./CustomerDetails";
 import ShippingAddressDetails from "./ShippingAddressDetails";
+import { getUserProfileAction } from "../../../redux/slices/users/usersSlice";
+
+
 
 export default function CustomerProfile() {
-  let profile;
-  let loading;
-  let error;
-  let orders = [];
+  // dispatch
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getUserProfileAction());
+  }, [dispatch]);
+  // get data from store
+  const { error, loading, profile } = useSelector((state) => state?.users);
+
+  // get orders
+  const orders = profile?.user?.orders;
 
   return (
     <>
@@ -86,7 +97,8 @@ export default function CustomerProfile() {
                           <div className="py-6 px-4 sm:px-6 lg:grid lg:grid-cols-12 lg:gap-x-8 lg:p-8">
                             <div className="sm:flex lg:col-span-7">
                               <div className="aspect-w-1 aspect-h-1 w-full flex-shrink-0 overflow-hidden rounded-lg sm:aspect-none sm:h-40 sm:w-40">
-                                <img src={product.imageSrc} alt={product.imageAlt} className="h-full w-full object-cover object-center sm:h-full sm:w-full"/>
+                                {/* <img src={product.imageSrc} alt={product.imageAlt} className="h-full w-full object-cover object-center sm:h-full sm:w-full"/> */}
+                                <img src={`data:${product?.image?.contentType};base64,${product?.image?.data.toString("base64")}`} alt={product.name} className="h-full w-full object-cover object-center sm:h-full sm:w-full"/>
                               </div>
 
                               <div className="mt-6 sm:mt-0 sm:ml-6">
@@ -119,9 +131,7 @@ export default function CustomerProfile() {
                 </div>
               </div>
               {/* shipping address */}
-              <ShippingAddressDetails
-                shippingAddress={profile?.user?.shippingAddress}
-              />
+              <ShippingAddressDetails shippingAddress={profile?.user?.shippingAddress} />
             </>
           );
         })

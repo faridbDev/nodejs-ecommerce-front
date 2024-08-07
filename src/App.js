@@ -11,7 +11,8 @@ import Navbar from "./components/Navbar/Navbar";
 import OrderHistory from "./components/Admin/Orders/ManageOrders";
 import OrderPayment from "./components/Users/Products/OrderPayment";
 import ManageCategories from "./components/Admin/Categories/ManageCategories";
-import UpdateProduct from "./components/Admin/Products/UpdateProduct";
+// import UpdateProduct from "./components/Admin/Products/UpdateProduct";
+import ProductUpdate from "./components/Admin/Products/ProductUpdate";
 import ManageStocks from "./components/Admin/Products/ManageStocks";
 import CategoryToAdd from "./components/Admin/Categories/CategoryToAdd";
 import AddCategory from "./components/Admin/Categories/AddCategory";
@@ -32,12 +33,13 @@ import Customers from "./components/Admin/Orders/Customers";
 import BrandsColorsList from "./components/Admin/Categories/BrandsColorsList";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
 import AdminRoutes from "./components/AuthRoute/AdminRoutes";
+import UpdateOrders from "./components/Admin/Orders/UpdateOrders";
 
 
 const App = () => {
   return (
     <BrowserRouter>
-      <Navbar />
+      {/* <Navbar /> */}
       {/* hide navbar if admin */}
       <Routes>
         {/* nested route */}
@@ -51,7 +53,7 @@ const App = () => {
           <Route path="" element={<OrdersList />} />
           <Route path="add-product" element={<AddProduct />} />
           <Route path="manage-products" element={<ManageStocks />} />
-          <Route path="products/edit/:id" element={<UpdateProduct />} />
+          <Route path="products/edit/:id" element={<ProductUpdate />} />
           {/* coupons */}
           <Route path="add-coupon" element={<AddCoupon />} />
           <Route path="manage-coupon" element={<ManageCoupons />} />
@@ -69,6 +71,7 @@ const App = () => {
           <Route path="all-colors" element={<BrandsColorsList />} />
           {/* Orders */}
           <Route path="manage-orders" element={<ManageOrders />} />
+          <Route path="orders/:id" element={<UpdateOrders />} />
           <Route path="order-payment" element={<OrderPayment />} />
           <Route path="customers" element={<Customers />} />
         </Route>
