@@ -49,9 +49,47 @@ export const fetchCouponsAction = createAsyncThunk('coupons/fetch-All',
 // fetch single coupon action
 export const fetchCouponAction = createAsyncThunk('coupons/single',
   async (code, { rejectWithValue, getState, dispatch }) => {
-    console.log(code);
     try {
       const { data } = await axios.get(`${baseURL}/coupons/single?code=${code}`);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+// update coupon action
+export const updateCouponAction = createAsyncThunk('coupon/update',
+  async ({ code, discount, startDate, endDate, id }, { rejectWithValue, getState, dispatch }) => {
+    try {
+      // Token - Authenticated
+      const token = getState()?.users?.userAuth?.userInfo?.token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+      // make request
+      const { data } = await axios.put(`${baseURL}/coupons/${id}/update`, { code, discount, startDate, endDate }, config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+// delete coupon action
+export const deleteCouponAction = createAsyncThunk('coupons/delete',
+  async (id, { rejectWithValue, getState, dispatch }) => {
+    try {
+      // Token - Authenticated
+      const token = getState()?.users?.userAuth?.userInfo?.token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+      const { data } = await axios.delete(`${baseURL}/coupons/${id}/delete`, config);
       return data;
     } catch (error) {
       return rejectWithValue(error?.response?.data);
@@ -107,6 +145,33 @@ const couponSlice = createSlice({
       state.loading = false;
       state.coupon = null;
       state.isAdded = false;
+      state.error = action.payload;
+    });
+    // update
+    builder.addCase(updateCouponAction.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(updateCouponAction.fulfilled, (state, action) => {
+      state.loading = false;
+      state.coupon = action.payload;
+      state.isUpdated = true;
+    });
+    builder.addCase(updateCouponAction.rejected, (state, action) => {
+      state.loading = false;
+      state.coupon = null;
+      state.isUpdated = false;
+      state.error = action.payload;
+    });
+    // delete
+    builder.addCase(deleteCouponAction.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(deleteCouponAction.fulfilled, (state, action) => {
+      state.loading = false;
+      state.isDeleted = true;
+    });
+    builder.addCase(deleteCouponAction.rejected, (state, action) => {
+      state.loading = false;
       state.error = action.payload;
     });
     // reset err action

@@ -1,17 +1,24 @@
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
-
 import "react-datepicker/dist/react-datepicker.css";
 import { useParams } from "react-router-dom";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import SuccessMsg from "../../SuccessMsg/SuccessMsg";
+import { fetchCouponAction, updateCouponAction  } from "../../../redux/slices/coupons/couponsSlice";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function UpdateCoupon() {
-  //---Fetch coupon ---
-  const { coupon, loading, error, isUpdated } = {};
-  //get the coupon
+  // get coupon code from url
   const { code } = useParams();
+  // dispatch
+  const dispatch = useDispatch();
+  //---Fetch coupon ---
+  useEffect(() => {
+    dispatch(fetchCouponAction(code));
+  }, [code, dispatch]);
+  const { coupon, loading, error, isUpdated } = useSelector((state) => state?.coupons);
+
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
@@ -28,7 +35,8 @@ export default function UpdateCoupon() {
   //onHandleSubmit---
   const onHandleSubmit = (e) => {
     e.preventDefault();
-
+    dispatch(updateCouponAction({ id: coupon?.coupon?._id, code: formData?.code, discount: formData?.discount,
+      startDate, endDate }));
     //reset
     setFormData({
       code: "",
@@ -55,13 +63,7 @@ export default function UpdateCoupon() {
                   Name
                 </label>
                 <div className="mt-1">
-                  <input
-                    type="text"
-                    name="code"
-                    value={formData?.code}
-                    onChange={onHandleChange}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
+                  <input type="text" name="code" value={formData?.code} onChange={onHandleChange} className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
                 </div>
               </div>
               <div>
@@ -70,13 +72,7 @@ export default function UpdateCoupon() {
                   Discount (in %)
                 </label>
                 <div className="mt-1">
-                  <input
-                    name="discount"
-                    value={formData?.discount}
-                    onChange={onHandleChange}
-                    type="number"
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
+                  <input name="discount" value={formData?.discount} onChange={onHandleChange} type="number" className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
                 </div>
               </div>
               {/* start date */}
@@ -85,10 +81,7 @@ export default function UpdateCoupon() {
                   Start Date
                 </label>
                 <div className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                  <DatePicker
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                  />
+                  <DatePicker selected={startDate} onChange={(date) => setStartDate(date)}/>
                 </div>
               </div>
 
@@ -98,19 +91,14 @@ export default function UpdateCoupon() {
                   End Date
                 </label>
                 <div className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                  <DatePicker
-                    selected={endDate}
-                    onChange={(date) => setEndDate(date)}
-                  />
+                  <DatePicker selected={endDate} onChange={(date) => setEndDate(date)}/>
                 </div>
               </div>
               <div>
                 {loading ? (
                   <LoadingComponent />
                 ) : (
-                  <button
-                    type="submit"
-                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Update Coupon
                   </button>
                 )}
