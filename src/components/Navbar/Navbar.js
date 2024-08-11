@@ -7,6 +7,8 @@ import logo from "./logo3.png";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategoriesAction } from "../../redux/slices/categories/categoriesSlice";
 import { getCartItemsFromLocalStorageAction } from "../../redux/slices/carts/cartSlices";
+import { logOutUserAction } from "../../redux/slices/users/usersSlice";
+import { fetchCouponsAction } from "../../redux/slices/coupons/couponsSlice";
 
 export default function Navbar() {
   // dispatch
@@ -31,6 +33,23 @@ export default function Navbar() {
   // get logged in user from localstorage
   const user = JSON.parse(localStorage.getItem('userInfo'));
   const isLoggedIn = user?.token ? true : false;
+
+  // logout handler
+  const logoutHandler = () => {
+    dispatch(logOutUserAction());
+    // reload
+    window.location.reload();
+  }
+
+  // coupons
+  useEffect(() => {
+    dispatch(fetchCouponsAction());
+  }, [dispatch]);
+  //get coupons from store
+  const { coupons, loading, error } = useSelector((state) => state?.coupons);
+  // get current coupon
+  const currentCoupon = coupons?.coupons ? coupons?.coupons[coupons?.coupons?.length-1] : '';
+  // const currentCopuon = coupons ? coupons?.coupons?.[coupons?.coupons?.length-1] : console.log(currentCopuon);
 
   return (
     <div className="bg-white">
@@ -118,29 +137,38 @@ export default function Navbar() {
 
       <header className="relative z-10">
         <nav aria-label="Top">
-          {/* Top navigation  desktop*/}
-          <div className="bg-gray-900">
-            <div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-              <p className="flex-1 text-center text-sm font-medium text-white lg:flex-none">
-                Get free delivery on orders over $100
-              </p>
-
-              <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                {!isLoggedIn && (
-                  <>
-                    <Link to="/register" className="text-sm front-medium text-white hover:text-gray-100">
-                      Create an account
-                    </Link>
-                    <span className="h-6 w-px bg-gray-600" aria-hidden="true"/>
-                    <Link to="/login" className="text-sm front-medium text-white hover:text-gray-100">
-                      Sign in
-                    </Link>
-                  </>
-                )}
+          {/* Coupon Navbar */}
+          {!currentCoupon?.isExpired && (
+            <div className="bg-yellow-600">
+              <div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+                <p style={{textAlign: 'center', width: '100%'}} className="flex-1 text-center text-sm font-medium text-white lg:flex-none">
+                  {currentCoupon ? `${currentCoupon?.code} - ${currentCoupon?.discount}% , ${currentCoupon?.daysLeft}` 
+                  : 'No Flash Sale At This Moment'}
+                </p>
               </div>
             </div>
-          </div>
-
+          )}
+          {/* Top navigation  desktop*/}
+          {!isLoggedIn && (
+            <div className="bg-gray-800">
+              <div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+                <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
+                  {!isLoggedIn && (
+                    <>
+                      <Link to="/register" className="text-sm front-medium text-white hover:text-gray-100">
+                        Create an account
+                      </Link>
+                      <span className="h-6 w-px bg-gray-100" aria-hidden="true"/>
+                      <Link to="/login" className="text-sm front-medium text-white hover:text-gray-100">
+                        Sign in
+                      </Link>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+          
           {/* Deskto Navigation */}
           <div className="bg-white">
             <div className="border-b border-gray-200">
@@ -201,13 +229,24 @@ export default function Navbar() {
 
                   {/* login profile icon mobile */}
                   <div className="flex flex-1 items-center justify-end">
+                    {user?.userFound?.isAdmin && (
+                      <Link to="/admin" className="inline-flex items-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        Admin Dashboard
+                      </Link>
+                    )}
                     <div className="flex items-center lg:ml-8">
                       <div className="flex space-x-8">
                         {isLoggedIn && (
                           <div className="flex">
-                            <Link to="/customer-profile" className="-m-2 p-2 text-gray-400 hover:text-gray-500">
+                            <Link to="/customer-profile" className="-m-2 p-2 mr-2 text-gray-400 hover:text-gray-500">
                               <UserIcon className="h-6 w-6" aria-hidden="true" />
                             </Link>
+                            {/* logout */}
+                            <button onClick={logoutHandler}>
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-gray-400 hover:text-gray-500">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                              </svg>
+                            </button>
                           </div>
                         )}
                       </div>

@@ -25,27 +25,6 @@ export default function ProductUpdate() {
     dispatch(fetchProductAction(id));
   }, [id, dispatch]);
 
-  // // files
-  // const [files, setFiles] = useState([]);
-  // const [fileErrs, setFileErrs] = useState([]);
-  // // file handlechange
-  // const fileHandleChange = (event) => {
-  //   const newFiles = Array.from(event.target.files);
-  //   // validation
-  //   const newErrs = [];
-  //   newFiles.forEach(file => {
-  //     if (file?.size > 1000000) {
-  //       newErrs.push(`${file?.name} is too large`);
-  //     }
-  //     if (!file?.type?.startsWith('image/')) {
-  //       newErrs.push(`${file.name} is not an image`)
-  //     }
-  //   });
-  //   setFiles(newFiles);
-  //   setFileErrs(newErrs);
-  // };
-
-
   // Sizes
   const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
   const [sizeOption, setSizeOption] = useState([]);

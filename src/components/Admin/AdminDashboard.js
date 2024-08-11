@@ -57,7 +57,7 @@ const couponsLinks = [
     ),
   },
   {
-    name: "Manage Coupon",
+    name: "All Coupons",
     href: "manage-coupon",
     icon: () => (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 m-1">
@@ -66,24 +66,23 @@ const couponsLinks = [
     ),
   },
 ];
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 const CategoryLinks = [
   { name: "Add Category", href: "category-to-add", icon: CogIcon },
-  { name: "Manage Category", href: "manage-category", icon: QuestionMarkCircleIcon },
+  { name: "All Categories", href: "all-categories", icon: QuestionMarkCircleIcon },
 ];
 
 const colorsLinks = [
-  { name: "Add New Color", href: "add-color", icon: CogIcon },
-  { name: "All Colors", href: "all-colors", icon: QuestionMarkCircleIcon },
+  { name: "All Colors", href: "all-colors", icon: QuestionMarkCircleIcon }
 ];
 
 const brandsLinks = [
-  { name: "Add New Brand", href: "add-brand", icon: CogIcon },
-  { name: "All Brands", href: "all-brands", icon: QuestionMarkCircleIcon },
+  { name: "All Brands", href: "all-brands", icon: QuestionMarkCircleIcon }
 ];
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
 
 export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -187,7 +186,7 @@ export default function AdminDashboard() {
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex flex-grow flex-col overflow-y-auto bg-cyan-900 pt-5 pb-4">
+          <div className="flex flex-grow flex-col overflow-y-auto bg-cyan-900 pt-20 pb-4">
             <nav className="mt-5 flex flex-1 flex-col divide-y divide-cyan-800 overflow-y-auto" aria-label="Sidebar">
               {/* orders links desktop */}
               <div className="mt-1 pt-1">

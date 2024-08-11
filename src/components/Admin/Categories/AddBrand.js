@@ -39,7 +39,7 @@ export default function AddBrand() {
           </svg>
 
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-            Add Product Brand
+            Add New Brand
           </h2>
         </div>
 
@@ -59,7 +59,7 @@ export default function AddBrand() {
                   <LoadingComponent/>
                 ) : (
                   <button type="submit" className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Add Product Brand
+                    Add New Brand
                   </button>
                 )}
               </div>

@@ -124,12 +124,10 @@ const couponSlice = createSlice({
     builder.addCase(fetchCouponsAction.fulfilled, (state, action) => {
       state.loading = false;
       state.coupons = action.payload;
-      state.isAdded = true;
     });
     builder.addCase(fetchCouponsAction.rejected, (state, action) => {
       state.loading = false;
       state.coupons = null;
-      state.isAdded = false;
       state.error = action.payload;
     });
     // fetch single coupon
@@ -139,12 +137,10 @@ const couponSlice = createSlice({
     builder.addCase(fetchCouponAction.fulfilled, (state, action) => {
       state.loading = false;
       state.coupon = action.payload;
-      state.isAdded = true;
     });
     builder.addCase(fetchCouponAction.rejected, (state, action) => {
       state.loading = false;
       state.coupon = null;
-      state.isAdded = false;
       state.error = action.payload;
     });
     // update

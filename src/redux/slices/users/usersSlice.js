@@ -8,7 +8,7 @@ const initialState = {
   loading: false,
   error: null,
   users: [],
-  user: {},
+  user: null,
   profile: {},
   userAuth: {
     loading: false,
@@ -88,6 +88,14 @@ export const updateUserShippingAddressAction = createAsyncThunk("users/update-sh
   }
 );
 
+// logout action
+export const logOutUserAction = createAsyncThunk("users/logout",
+  async (payload, { rejectWithValue, getState, dispatch }) => {
+    localStorage.removeItem('userInfo');
+    return true;
+  }
+);
+
 // users slice
 const usersSlice = createSlice({
   name: "users",
@@ -141,6 +149,10 @@ const usersSlice = createSlice({
     builder.addCase(updateUserShippingAddressAction.rejected, (state, action) => {
       state.error = action.payload;
       state.loading = false;
+    });
+    // logout user
+    builder.addCase(logOutUserAction.fulfilled, (state, action) => {
+      state.userAuth.userInfo = null;
     });
     // reset error action
     builder.addCase(resetErrAction.pending, (state) => {

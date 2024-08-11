@@ -1,11 +1,20 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { getUserProfileAction } from '../../redux/slices/users/usersSlice';
+import AdminOnly from '../NotAuthorized/AdminOnly';
 
 const AdminRoutes = ({children}) => {
-  // get user from localstorage
-  const user = JSON.parse(localStorage.getItem('userInfo'));
-  const isAdmin = user?.userFound?.isAdmin ? true: false;
+  // dispatch
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getUserProfileAction());
+  }, [dispatch]);
+  // get user from store
+  const { userAuth } = useSelector((state) => state?.users);
+  const isAdmin = userAuth?.userInfo?.userFound?.isAdmin ? true: false;
   if (!isAdmin)
-    return <h1>Access Denid, Admin Only</h1>
+    return <AdminOnly/>;
   return <>{children}</>;
 }
 

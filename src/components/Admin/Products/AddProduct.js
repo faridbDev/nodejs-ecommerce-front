@@ -15,6 +15,7 @@ import { fetchColorsAction } from "../../../redux/slices/categories/colorsSlice"
 const animatedComponents = makeAnimated();
 
 export default function AddProduct() {
+  // dispatch
   const dispatch = useDispatch();
   // files
   const [files, setFiles] = useState([]);
@@ -100,8 +101,6 @@ export default function AddProduct() {
   //onSubmit
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    console.log(fileErrs);
-    // dispatch
     dispatch(
       createProductAction({
         ...formData,

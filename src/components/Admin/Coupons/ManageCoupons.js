@@ -2,13 +2,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { deleteCouponAction, fetchCouponsAction } from "../../../redux/slices/coupons/couponsSlice";
 import { Link, useParams } from "react-router-dom";
-
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import NoDataFound from "../../NoDataFound/NoDataFound";
 
 export default function ManageCoupons() {
-  const { id } = useParams();
   // dispatch
   const dispatch = useDispatch();
   useEffect(() => {

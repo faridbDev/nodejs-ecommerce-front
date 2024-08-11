@@ -30,51 +30,111 @@ import ThanksForOrdering from "./components/Users/Products/ThanksForOrdering";
 import OrdersList from "./components/Admin/Orders/OdersList";
 import ManageOrders from "./components/Admin/Orders/ManageOrders";
 import Customers from "./components/Admin/Orders/Customers";
-import BrandsColorsList from "./components/Admin/Categories/BrandsColorsList";
-import AuthRoute from "./components/AuthRoute/AuthRoute";
+import BrandsList from "./components/Admin/Categories/BrandsList";
+import ColorsList from "./components/Admin/Categories/ColorsList"
 import AdminRoutes from "./components/AuthRoute/AdminRoutes";
+import AuthRoute from "./components/AuthRoute/AuthRoute";
 import UpdateOrders from "./components/Admin/Orders/UpdateOrders";
+
 
 
 const App = () => {
   return (
     <BrowserRouter>
-      {/* <Navbar /> */}
+      <Navbar />
+
       {/* hide navbar if admin */}
       <Routes>
         {/* nested route */}
-        <Route path="admin"
-          element={
+        <Route path="admin" element={
             <AdminRoutes>
               <AdminDashboard />
             </AdminRoutes>
           }>
+          
           {/* products */} 
-          <Route path="" element={<OrdersList />} />
-          <Route path="add-product" element={<AddProduct />} />
-          <Route path="manage-products" element={<ManageStocks />} />
-          <Route path="products/edit/:id" element={<ProductUpdate />} />
+          <Route path="" element={
+            <AdminRoutes>
+              <OrdersList />
+            </AdminRoutes>
+          }/>
+          <Route path="add-product" element={
+            <AdminRoutes>
+              <AddProduct />
+            </AdminRoutes>
+          }/>
+          <Route path="manage-products" element={
+            <AdminRoutes>
+              <ManageStocks />
+            </AdminRoutes>
+          }/>
+          <Route path="products/edit/:id" element={
+            <AdminRoutes>
+              <ProductUpdate />
+            </AdminRoutes>
+          }/>
+
           {/* coupons */}
-          <Route path="add-coupon" element={<AddCoupon />} />
+          <Route path="add-coupon" element={
+            <AdminRoutes>
+              <AddCoupon />
+            </AdminRoutes>
+          }/>
           <Route path="manage-coupon" element={<ManageCoupons />} />
-          <Route path="manage-coupon/edit/:code" element={<UpdateCoupon />} />
+          <Route path="manage-coupon/edit/:code" element={
+            <AdminRoutes>
+              <UpdateCoupon />
+            </AdminRoutes>
+          }/>
+
           {/* Category */}
-          <Route path="category-to-add" element={<CategoryToAdd />} />{" "}
+          <Route path="category-to-add" element={
+            <AdminRoutes>
+              <CategoryToAdd />
+            </AdminRoutes>
+          }/>
           <Route path="add-category" element={<AddCategory />} />
-          <Route path="manage-category" element={<ManageCategories />} />
-          <Route path="edit-category/:id" element={<UpdateCategory />} />
+          <Route path="all-categories" element={
+            <AdminRoutes>
+              <ManageCategories />
+            </AdminRoutes>
+          }/>
+          <Route path="edit-category/:id" element={
+            <AdminRoutes>
+              <UpdateCategory />
+            </AdminRoutes>
+          }/>
+
           {/* brand category */}
-          <Route path="add-brand" element={<AddBrand />} />
-          <Route path="all-brands" element={<BrandsColorsList />} />
+          <Route path="add-brand" element={
+            <AdminRoutes>
+              <AddBrand />
+            </AdminRoutes>
+          }/>
+          <Route path="all-brands" element={<BrandsList />} />
+
           {/* color category */}
-          <Route path="add-color" element={<AddColor />} />
-          <Route path="all-colors" element={<BrandsColorsList />} />
+          <Route path="add-color" element={
+            <AdminRoutes>
+              <AddColor />
+            </AdminRoutes>
+          }/>
+          <Route path="all-colors" element={<ColorsList />} />
+
           {/* Orders */}
           <Route path="manage-orders" element={<ManageOrders />} />
-          <Route path="orders/:id" element={<UpdateOrders />} />
-          <Route path="order-payment" element={<OrderPayment />} />
-          <Route path="customers" element={<Customers />} />
+          <Route path="orders/:id" element={
+            <AdminRoutes>
+              <UpdateOrders />
+            </AdminRoutes>
+          }/>
+          <Route path="customers" element={
+            <AdminRoutes>
+              <Customers />
+            </AdminRoutes>
+          }/>
         </Route>
+
         {/* public links */}
         {/* Products */}
         <Route path="/" element={<HomePage />} />
@@ -82,16 +142,30 @@ const App = () => {
         <Route path="/products/:id" element={<Product />} />
         <Route path="/all-categories" element={<AllCategories />} />
         <Route path="/success" element={<ThanksForOrdering />} />
+
         {/* review */}
-        <Route path="/add-review/:id" element={<AddReview />} />
+        <Route path="/add-review/:id" element={
+          <AuthRoute>
+            <AddReview />
+          </AuthRoute>
+        }/>
 
         {/* shopping cart */}
-        <Route path="/shopping-cart" element={<ShoppingCart />} />
-        <Route path="/order-payment" element={<OrderPayment />} />
+        <Route path="/shopping-cart" element={<ShoppingCart />}/>
+        <Route path="/order-payment" element={
+          <AuthRoute>
+            <OrderPayment />
+          </AuthRoute>
+        }/>
+
         {/* users */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterForm />} />
-        <Route path="/customer-profile" element={<CustomerProfile />} />
+        <Route path="/customer-profile" element={
+          <AuthRoute>
+            <CustomerProfile/>
+          </AuthRoute>
+        }/>
       </Routes>
     </BrowserRouter>
   );

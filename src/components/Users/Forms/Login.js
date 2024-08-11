@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUserAction } from "../../../redux/slices/users/usersSlice";
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
@@ -22,16 +22,18 @@ const Login = () => {
   const onSubmitHandler = (e) => {
     e.preventDefault();
     dispatch(loginUserAction({ email, password }));
+    // // reload
+    // window.location.href = "/";
   };
   // get data from store
   const { error, loading, userInfo } = useSelector((state) => state?.users?.userAuth);
   
-  // // redirect
-  // if (userInfo?.userFound?.isAdmin) {
-  //   window.location.href = '/admin';
-  // } else {
-  //   window.location.href = 'customer-profile';
-  // }
+  // redirect
+  useEffect(() => {
+    if (userInfo?.token) {
+      window.location.href = "/";
+    }
+  }, [userInfo]);
 
   return (
     <>
